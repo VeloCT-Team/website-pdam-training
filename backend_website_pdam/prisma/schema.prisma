@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Model Admin
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  nama      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+// Model Pendaftaran Sambungan
+model PendaftaranSambungan {
+  id        Int      @id @default(autoincrement())
+
+  // Data Calon Pelanggan
+  namaCalon       String
+  hpCalon         String
+  emailCalon      String
+  kotaCalon       String
+  kecamatanCalon  String
+  kelurahanCalon  String
+  jalanCalon      String
+  noRumahCalon    String
+  rtCalon         String
+  rwCalon         String
+
+  // Data Penanggung Jawab
+  namaPJ          String
+  hpPJ            String
+  emailPJ         String
+  kotaPJ          String
+  kecamatanPJ     String
+  kelurahanPJ     String
+  jalanPJ         String
+  noRumahPJ       String
+  rtPJ            String
+  rwPJ            String
+
+  // Informasi Tambahan
+  kebutuhanAir        String
+  ketersediaanTangki  String
+  kategoriBangunan    String
+  peruntukanBangunan  String
+  lokasiLat           Float
+  lokasiLng           Float
+
+  // Dokumen (file paths)
+  ktpCalon        String?
+  kartuKeluarga   String?
+  pbb             String?
+  fotoBangunan    String?
+
+  // Status & Timestamps
+  status      String   @default("Pending") // Pending, Diproses, Ditolak
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("pendaftaran_sambungan")
+}
+
+// Model Pengaduan
+model Pengaduan {
+  id              Int      @id @default(autoincrement())
+  nama            String
+  nomorPelanggan  String
+  noHandphone     String
+  email           String
+  kategori        String   // Air Tidak Mengalir, Kebocoran Pipa, dll
+  deskripsi       String   @db.Text
+  lokasi          String   // koordinat lat,lng
+  status          String   @default("Belum Ditindak") // Belum Ditindak, Sedang Diproses, Selesai
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("pengaduan")
+}
+
+// Model Simulasi Tagihan (untuk menyimpan history simulasi)
+model SimulasiTagihan {
+  id              Int      @id @default(autoincrement())
+  nomorPelanggan  String
+  namaPelanggan   String?
+  kategori        String
+  pemakaian       Int      // dalam m³
+  tarifPerM3      Int
+  biayaAdmin      Int
+  totalTagihan    Int
+  createdAt       DateTime @default(now())
+
+  @@map("simulasi_tagihan")
+}
+
+// Model Cek Tagihan (untuk history cek tagihan)
+model CekTagihan {
+  id              Int      @id @default(autoincrement())
+  nomorPelanggan  String
+  namaPelanggan   String?
+  bulan           String
+  tahun           Int
+  pemakaian       Int
+  totalTagihan    Int
+  status          String   // Lunas, Belum Lunas
+  createdAt       DateTime @default(now())
+
+  @@map("cek_tagihan")
+}
