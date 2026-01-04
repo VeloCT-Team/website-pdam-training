@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Container, Text, Stack, VStack, Button, createToaster, Toaster } from '@chakra-ui/react';
 import { pendaftaranService } from '../services/pendaftaran.service';
 import type { PendaftaranData } from '../services/pendaftaran.service';
-import { API_BASE_URL } from '../config/api';
 
 const toaster = createToaster({
   placement: 'top',
@@ -85,20 +84,20 @@ const AdminDaftarSambungan = () => {
     }
   };
 
-  const handleViewDocument = (filename: string | null | undefined) => {
-    if (!filename) {
+  const handleViewDocument = (fileUrl: string | null | undefined) => {
+    if (!fileUrl) {
       toaster.error({
         title: 'Dokumen Tidak Tersedia',
         description: 'Dokumen ini belum diunggah.',
       });
       return;
     }
-    // Open document in new tab
-    window.open(`${API_BASE_URL.replace('/api', '')}/uploads/${filename}`, '_blank');
+    // Langsung buka URL Cloudinary
+    window.open(fileUrl, '_blank');
   };
 
-  const handleDownloadDocument = async (filename: string | null | undefined) => {
-    if (!filename) {
+  const handleDownloadDocument = async (fileUrl: string | null | undefined) => {
+    if (!fileUrl) {
       toaster.error({
         title: 'Dokumen Tidak Tersedia',
         description: 'Dokumen ini belum diunggah.',
@@ -107,15 +106,16 @@ const AdminDaftarSambungan = () => {
     }
 
     try {
-      const fileUrl = `${API_BASE_URL.replace('/api', '')}/uploads/${filename}`;
+      // Extract filename dari URL Cloudinary
+      const filename = fileUrl.split('/').pop() || 'document';
 
-      // Fetch file as blob
+      // Fetch file as blob dari Cloudinary
       const response = await fetch(fileUrl);
 
       if (!response.ok) {
         toaster.error({
           title: 'File Tidak Ditemukan',
-          description: 'File dokumen tidak tersedia di server.',
+          description: 'File dokumen tidak tersedia.',
         });
         return;
       }
@@ -139,7 +139,7 @@ const AdminDaftarSambungan = () => {
 
       toaster.success({
         title: 'Download Berhasil',
-        description: `File ${filename} berhasil diunduh`,
+        description: 'File berhasil diunduh',
       });
     } catch (error) {
       console.error('Download error:', error);

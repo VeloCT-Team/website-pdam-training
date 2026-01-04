@@ -1,5 +1,30 @@
 import { Request, Response } from 'express';
+import { cloudinary } from '../config/cloudinary';
+import { Readable } from 'stream';
 import prisma from '../config/database';
+
+// Helper function untuk upload ke Cloudinary
+const uploadToCloudinary = (file: Express.Multer.File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'pdam-uploads',
+        resource_type: 'auto'
+      },
+      (error, result) => {
+        if (error) {
+          console.error('❌ Cloudinary upload error:', error);
+          return reject(error);
+        }
+        console.log('✅ Uploaded:', result?.secure_url);
+        resolve(result!.secure_url);
+      }
+    );
+
+    const bufferStream = Readable.from(file.buffer);
+    bufferStream.pipe(uploadStream);
+  });
+};
 
 /**
  * @swagger
@@ -29,6 +54,9 @@ export const createPendaftaran = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log('📤 === START UPLOAD ===');
+    console.log('📁 Files:', Object.keys(req.files || {}));
+
     const {
       // Data Calon Pelanggan
       namaCalon,
@@ -64,6 +92,36 @@ export const createPendaftaran = async (
     // Get uploaded files
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
+    // Upload files ke Cloudinary
+    const uploadedFiles: any = {};
+
+    // KTP Calon
+    if (files?.ktpCalon && files.ktpCalon[0]) {
+      console.log('⬆️  Uploading KTP...');
+      uploadedFiles.ktpCalon = await uploadToCloudinary(files.ktpCalon[0]);
+    }
+
+    // Kartu Keluarga
+    if (files?.kartuKeluarga && files.kartuKeluarga[0]) {
+      console.log('⬆️  Uploading KK...');
+      uploadedFiles.kartuKeluarga = await uploadToCloudinary(files.kartuKeluarga[0]);
+    }
+
+    // PBB
+    if (files?.pbb && files.pbb[0]) {
+      console.log('⬆️  Uploading PBB...');
+      uploadedFiles.pbb = await uploadToCloudinary(files.pbb[0]);
+    }
+
+    // Foto Bangunan
+    if (files?.fotoBangunan && files.fotoBangunan[0]) {
+      console.log('⬆️  Uploading Foto Bangunan...');
+      uploadedFiles.fotoBangunan = await uploadToCloudinary(files.fotoBangunan[0]);
+    }
+
+    console.log('✅ All uploaded:', uploadedFiles);
+
+    // Simpan ke database dengan URL Cloudinary
     const pendaftaran = await prisma.pendaftaranSambungan.create({
       data: {
         namaCalon,
@@ -92,19 +150,23 @@ export const createPendaftaran = async (
         peruntukanBangunan,
         lokasiLat: parseFloat(lokasiLat),
         lokasiLng: parseFloat(lokasiLng),
-        ktpCalon: files?.ktpCalon?.[0]?.filename,
-        kartuKeluarga: files?.kartuKeluarga?.[0]?.filename,
-        pbb: files?.pbb?.[0]?.filename,
-        fotoBangunan: files?.fotoBangunan?.[0]?.filename,
+        // URL dari Cloudinary, bukan filename
+        ktpCalon: uploadedFiles.ktpCalon || null,
+        kartuKeluarga: uploadedFiles.kartuKeluarga || null,
+        pbb: uploadedFiles.pbb || null,
+        fotoBangunan: uploadedFiles.fotoBangunan || null,
       },
     });
+
+    console.log('💾 Saved to DB:', pendaftaran.id);
+    console.log('✅ === END UPLOAD ===');
 
     res.status(201).json({
       message: 'Pendaftaran sambungan berhasil',
       data: pendaftaran,
     });
   } catch (error) {
-    console.error('Create pendaftaran error:', error);
+    console.error('❌ Create pendaftaran error:', error);
     res.status(500).json({ message: 'Terjadi kesalahan server' });
   }
 };
@@ -178,6 +240,14 @@ export const getPendaftaranById = async (
       res.status(404).json({ message: 'Pendaftaran tidak ditemukan' });
       return;
     }
+
+    console.log('📄 Pendaftaran:', {
+      id: pendaftaran.id,
+      ktpCalon: pendaftaran.ktpCalon ? '✅' : '❌',
+      kartuKeluarga: pendaftaran.kartuKeluarga ? '✅' : '❌',
+      pbb: pendaftaran.pbb ? '✅' : '❌',
+      fotoBangunan: pendaftaran.fotoBangunan ? '✅' : '❌',
+    });
 
     res.json({
       message: 'Detail pendaftaran berhasil diambil',

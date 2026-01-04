@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as pendaftaranController from '../controllers/pendaftaran.controller';
 import { authMiddleware } from '../middlewares/auth';
-import { upload } from '../middlewares/upload';
+import { upload } from '../middlewares/upload'; // ← Ubah baris ini aja
 
 const router = Router();
 
