@@ -4,13 +4,16 @@ import pg from 'pg';
 
 const { Pool } = pg;
 
-// Create a PostgreSQL connection pool with explicit config
+// Use DATABASE_URL from environment or fallback to local
+const connectionString = process.env.DATABASE_URL ||
+  'postgresql://postgres:Cecem1706@localhost:5432/pdam_db';
+
+// Create a PostgreSQL connection pool from connection string
 const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  database: 'pdam_db',
-  user: 'postgres',
-  password: 'Cecem1706',
+  connectionString,
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: 10,
 });
 
 // Create adapter
