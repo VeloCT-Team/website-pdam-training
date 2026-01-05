@@ -314,54 +314,66 @@ const AdminPengaduan = () => {
             overflowY="auto"
           >
             {/* Header */}
-            <Box p={4} borderBottom="1px solid" borderColor="gray.200" position="sticky" top={0} bg="white" zIndex={1}>
-              <Stack direction="row" justify="space-between" align="center">
+            <Box p={{ base: 3, md: 4 }} borderBottom="1px solid" borderColor="gray.200" position="sticky" top={0} bg="white" zIndex={1}>
+              <VStack gap={3} align="stretch">
                 <Box>
-                  <Heading fontSize={{ base: 'lg', md: 'xl' }} color="brand.navy">
+                  <Heading fontSize={{ base: 'md', md: 'xl' }} color="brand.navy">
                     Detail Pengaduan #{selectedData.id}
                   </Heading>
                   <Text fontSize="xs" color="gray.500" mt={1}>
                     {selectedData.tanggalPengaduan}
                   </Text>
                 </Box>
-                <Stack direction="row" gap={2}>
+                <Stack direction={{ base: 'column', md: 'row' }} gap={2} w="full">
                   {/* Button ubah status berdasarkan status saat ini */}
                   {selectedData.status === 'Belum Ditindak' && (
                     <Button
-                      size="sm"
+                      size={{ base: 'md', md: 'sm' }}
                       bg="blue.500"
                       color="white"
-                      px={4}
+                      px={{ base: 4, md: 4 }}
+                      py={{ base: 3, md: 2 }}
+                      h={{ base: '44px', md: 'auto' }}
+                      fontSize={{ base: 'sm', md: 'sm' }}
                       _hover={{ bg: 'blue.600' }}
                       onClick={() => handleUbahStatus('Sedang Diproses')}
+                      flex={{ base: 1, md: 'auto' }}
                     >
                       Mulai Proses
                     </Button>
                   )}
                   {selectedData.status === 'Sedang Diproses' && (
                     <Button
-                      size="sm"
+                      size={{ base: 'md', md: 'sm' }}
                       bg="green.500"
                       color="white"
-                      px={4}
+                      px={{ base: 4, md: 4 }}
+                      py={{ base: 3, md: 2 }}
+                      h={{ base: '44px', md: 'auto' }}
+                      fontSize={{ base: 'sm', md: 'sm' }}
                       _hover={{ bg: 'green.600' }}
                       onClick={() => handleUbahStatus('Selesai')}
+                      flex={{ base: 1, md: 'auto' }}
                     >
                       Tandai Selesai
                     </Button>
                   )}
                   <Button
-                    size="sm"
+                    size={{ base: 'md', md: 'sm' }}
                     bg="gray.200"
                     color="gray.700"
-                    px={4}
+                    px={{ base: 4, md: 4 }}
+                    py={{ base: 3, md: 2 }}
+                    h={{ base: '44px', md: 'auto' }}
+                    fontSize={{ base: 'sm', md: 'sm' }}
                     _hover={{ bg: 'gray.300' }}
                     onClick={closeModal}
+                    flex={{ base: 1, md: 'auto' }}
                   >
                     ✕ Tutup
                   </Button>
                 </Stack>
-              </Stack>
+              </VStack>
             </Box>
 
             {/* Body */}

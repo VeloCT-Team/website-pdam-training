@@ -330,11 +330,13 @@ const AdminDaftarSambungan = () => {
                 </Box>
                 <Stack direction={{ base: 'column', md: 'row' }} gap={2} w="full">
                   <Button
-                    size="sm"
+                    size={{ base: 'md', md: 'sm' }}
                     bg="green.500"
                     color="white"
-                    px={{ base: 3, md: 4 }}
-                    fontSize={{ base: 'xs', md: 'sm' }}
+                    px={{ base: 4, md: 4 }}
+                    py={{ base: 3, md: 2 }}
+                    h={{ base: '44px', md: 'auto' }}
+                    fontSize={{ base: 'sm', md: 'sm' }}
                     _hover={{ bg: 'green.600' }}
                     onClick={handleProses}
                     flex={{ base: 1, md: 'auto' }}
@@ -342,11 +344,13 @@ const AdminDaftarSambungan = () => {
                     Tandai Telah Diproses
                   </Button>
                   <Button
-                    size="sm"
+                    size={{ base: 'md', md: 'sm' }}
                     bg="gray.200"
                     color="gray.700"
-                    px={{ base: 3, md: 4 }}
-                    fontSize={{ base: 'xs', md: 'sm' }}
+                    px={{ base: 4, md: 4 }}
+                    py={{ base: 3, md: 2 }}
+                    h={{ base: '44px', md: 'auto' }}
+                    fontSize={{ base: 'sm', md: 'sm' }}
                     _hover={{ bg: 'gray.300' }}
                     onClick={closeModal}
                     flex={{ base: 1, md: 'auto' }}
