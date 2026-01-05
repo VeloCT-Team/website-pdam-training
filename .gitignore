@@ -10,7 +10,8 @@ dist/
 .env.production
 
 # Prisma
-prisma/migrations/**/migration.sql
+# Keep migration files for production deployment
+# prisma/migrations/**/migration.sql
 
 # Uploads (jika ada folder upload)
 uploads/
