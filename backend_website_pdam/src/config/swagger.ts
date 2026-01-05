@@ -14,6 +14,10 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
+        url: 'https://website-pdam-training.onrender.com',
+        description: 'Production server',
+      },
+      {
         url: 'http://localhost:5000',
         description: 'Development server',
       },
