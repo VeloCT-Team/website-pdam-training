@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base URL untuk API backend
-export const API_BASE_URL = 'http://localhost:5000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://website-pdam-training.onrender.com/api';
 
 // Create axios instance dengan konfigurasi default
 const api = axios.create({
