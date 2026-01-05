@@ -18,8 +18,20 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://website-pdam-training.vercel.app',
+    /\.vercel\.app$/ // Allow all Vercel preview deployments
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
